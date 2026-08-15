@@ -200,24 +200,33 @@
 }
 
 .tag--critical {
-  background-color: rgba(229, 57, 53, 0.12);
-  color: #E53935;
+  background-color: rgba(211, 47, 47, 0.15);
+  color: #B71C1C;
+  font-weight: 600;
 }
 
 .tag--high {
-  background-color: rgba(251, 140, 0, 0.12);
-  color: #FB8C00;
+  background-color: rgba(216, 112, 0, 0.15);
+  color: #B75200;
+  font-weight: 600;
 }
 
 .tag--medium {
-  background-color: rgba(253, 216, 53, 0.12);
-  color: #FDD835;
+  background-color: rgba(90, 82, 224, 0.15);
+  color: #3A32B0;
+  font-weight: 600;
 }
 
 .tag--low {
-  background-color: rgba(66, 165, 245, 0.12);
-  color: #42A5F5;
+  background-color: rgba(46, 125, 50, 0.15);
+  color: #1B5E20;
+  font-weight: 600;
 }
+
+[data-theme="dark"] .tag--critical { background-color: rgba(239, 83, 80, 0.2); color: #FF8A80; }
+[data-theme="dark"] .tag--high { background-color: rgba(255, 167, 38, 0.2); color: #FFD54F; }
+[data-theme="dark"] .tag--medium { background-color: rgba(129, 118, 255, 0.2); color: #B388FF; }
+[data-theme="dark"] .tag--low { background-color: rgba(74, 222, 128, 0.2); color: #A5D6A7; }
 
 .badge {
   display: inline-flex;
@@ -870,3 +879,142 @@
 .habit-cell--missed {
   background-color: var(--bg-tertiary);
 }
+
+/* ── Essential Utility Classes for Clean Text & Layout Alignment ── */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1 1 0%; }
+.flex-shrink-0 { flex-shrink: 0; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+
+.gap-1 { gap: 4px; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.gap-6 { gap: 24px; }
+.gap-8 { gap: 32px; }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.max-w-3xl { max-width: 48rem; }
+.max-w-2xl { max-width: 42rem; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+.text-xs { font-size: var(--text-xs); }
+.text-sm { font-size: var(--text-sm); }
+.text-base { font-size: var(--text-base); }
+.text-lg { font-size: var(--text-lg); }
+.text-xl { font-size: var(--text-xl); }
+.text-2xl { font-size: var(--text-2xl); }
+.text-3xl { font-size: var(--text-3xl); }
+
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-medium { font-weight: 500; }
+
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary { color: var(--text-tertiary); }
+.text-accent-primary { color: var(--accent-primary); }
+.text-accent-danger { color: var(--accent-danger); }
+.text-accent-success { color: var(--accent-success); }
+.text-accent-warning { color: var(--accent-warning); }
+
+.bg-bg-primary { background-color: var(--bg-primary); }
+.bg-bg-secondary { background-color: var(--bg-secondary); }
+.bg-bg-tertiary { background-color: var(--bg-tertiary); }
+.bg-bg-elevated { background-color: var(--bg-elevated); }
+
+.m-0 { margin: 0; }
+.mb-1 { margin-bottom: 4px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.mb-6 { margin-bottom: 24px; }
+.mb-8 { margin-bottom: 32px; }
+
+.mt-1 { margin-top: 4px; }
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+
+.p-1 { padding: 4px; }
+.p-2 { padding: 8px; }
+.p-3 { padding: 12px; }
+.p-4 { padding: 16px; }
+.p-6 { padding: 24px; }
+
+.px-2 { padding-left: 8px; padding-right: 8px; }
+.px-3 { padding-left: 12px; padding-right: 12px; }
+.px-4 { padding-left: 16px; padding-right: 16px; }
+
+.py-1 { padding-top: 4px; padding-bottom: 4px; }
+.py-2 { padding-top: 8px; padding-bottom: 8px; }
+.py-3 { padding-top: 12px; padding-bottom: 12px; }
+.py-4 { padding-top: 16px; padding-bottom: 16px; }
+
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+.border { border: 1px solid var(--border); }
+.border-b { border-bottom: 1px solid var(--border); }
+.border-t { border-top: 1px solid var(--border); }
+.border-l { border-left: 1px solid var(--border); }
+.border-r { border-right: 1px solid var(--border); }
+.border-border { border-color: var(--border); }
+.border-border-light { border-color: var(--border-light); }
+.border-transparent { border-color: transparent; }
+.border-accent-primary { border-color: var(--accent-primary); }
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hidden { display: none !important; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.cursor-pointer { cursor: pointer; }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.space-y-2 > * + * { margin-top: 8px; }
+.space-y-3 > * + * { margin-top: 12px; }
+.space-y-4 > * + * { margin-top: 16px; }
+
+/* ── Grid System Utilities ── */
+.grid { display: grid !important; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+.grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)) !important; }
+.grid-rows-5 { grid-template-rows: repeat(5, minmax(0, 1fr)) !important; }
+.grid-rows-6 { grid-template-rows: repeat(6, minmax(0, 1fr)) !important; }
+.gap-y-1 { row-gap: 4px !important; }
+
+/* ── Google Calendar UI Polish ── */
+.gcal-chip {
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.gcal-chip:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+

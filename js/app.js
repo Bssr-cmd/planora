@@ -214,6 +214,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   const fontSize = app.store.getSetting('fontSize') || 'medium';
   document.body.setAttribute('data-font-size', fontSize);
 
+  // Beginner vs Advanced Mode Sidebar Filtering
+  const updateSidebarMode = () => {
+    const isAdvanced = app.store.getSetting('advancedMode') !== false;
+    document.querySelectorAll('[data-section="plan"], [data-section="track"]').forEach(el => {
+      el.style.display = isAdvanced ? '' : 'none';
+    });
+  };
+  updateSidebarMode();
+  app.store.subscribe('settings', () => updateSidebarMode());
+
   // Sidebar navigation
   document.querySelectorAll('.sidebar__item[data-route]').forEach(item => {
     item.addEventListener('click', () => {
@@ -223,6 +233,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('sidebar')?.classList.remove('sidebar--open');
     });
   });
+
+  // Notification Bell Handler
+  const bellBtn = document.getElementById('header-bell');
+  if (bellBtn) {
+    bellBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (app._notificationCenter && app._notificationCenter.togglePanel) {
+        app._notificationCenter.togglePanel();
+      }
+    });
+  }
 
   // Theme toggle
   const themeToggle = document.getElementById('theme-toggle');

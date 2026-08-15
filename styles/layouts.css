@@ -154,11 +154,12 @@
   .sidebar__logo span,
   .sidebar__item span,
   .sidebar__item text,
-  .sidebar__item::after {
+  .sidebar__item::after,
+  .sidebar__section-header,
+  .sidebar__footer .badge {
     display: none;
   }
   
-  /* Select text nodes inside sidebar item and hide them */
   .sidebar__item {
     font-size: 0;
     justify-content: center;

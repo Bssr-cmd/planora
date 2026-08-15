@@ -4,18 +4,26 @@ let currentTab = 'all';
 
 export function render() {
   return `
-    <div class="view view--goals">
-      <header class="view__header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h1 style="margin: 0; font-size: 24px; font-weight: 600;">Goals</h1>
-        <button class="btn btn--primary" id="btn-new-goal">
-          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-          New Goal
-        </button>
+    <div class="view view--goals" style="max-width: 1200px; margin: 0 auto; padding-bottom: 30px;">
+      <header class="view__header flex justify-between items-center mb-6 flex-wrap gap-4">
+        <div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 700;">Goal Architecture</h1>
+          <p style="font-size: var(--text-xs); color: var(--text-secondary); margin-top: 2px;">Connect long-term vision down to daily execution.</p>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn--secondary" id="btn-goals-plan-roadmap" style="background: rgba(108, 99, 255, 0.1); color: var(--accent-primary); font-weight: 600;">
+            ◇ Plan Goal Roadmap
+          </button>
+          <button class="btn btn--primary" id="btn-new-goal">
+            + New Goal
+          </button>
+        </div>
       </header>
 
-      <div style="margin-bottom: 24px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;" class="scroll-hidden">
+      <div style="margin-bottom: 20px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px;" class="scroll-hidden">
         ${['all', 'long-term', 'yearly', 'quarterly', 'monthly', 'weekly', 'daily'].map(tab => `
-          <button class="btn btn--sm ${currentTab === tab ? 'btn--secondary' : 'btn--ghost'}" data-tab="${tab}" style="text-transform: capitalize; border-radius: 20px;">
+          <button class="btn btn--sm ${currentTab === tab ? 'btn--secondary' : 'btn--ghost'}" data-tab="${tab}" style="text-transform: capitalize; border-radius: 20px; font-size: 12px; padding: 4px 14px; ${currentTab === tab ? 'background: var(--bg-secondary); font-weight: 600;' : ''}">
             ${tab.replace('-', ' ')}
           </button>
         `).join('')}
@@ -38,41 +46,42 @@ function renderContent() {
 
   if (filteredGoals.length === 0) {
     container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state__icon">🎯</div>
-        <p class="empty-state__message">Set your first goal and start working toward it.</p>
-        <button class="btn btn--primary mt-4" id="btn-new-goal-empty">Create Goal</button>
+      <div class="card empty-state" style="padding: 48px; text-align: center;">
+        <div class="empty-state__icon" style="font-size: 3rem; margin-bottom: 12px;">🎯</div>
+        <h3 class="empty-state__title" style="font-size: var(--text-lg); font-weight: 700;">No Goals in this Hierarchy</h3>
+        <p class="empty-state__message" style="font-size: var(--text-xs); color: var(--text-secondary);">Set your first goal and connect it to projects and tasks.</p>
+        <button class="btn btn--primary" id="btn-new-goal-empty" style="margin-top: 16px;">+ Create Goal</button>
       </div>
     `;
     return;
   }
 
   container.innerHTML = `
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
       ${filteredGoals.map(g => `
-        <div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 12px; position: relative;">
+        <div class="card" style="padding: 20px; border-radius: var(--radius-lg); background: var(--bg-elevated); border: 1px solid var(--border-light); display: flex; flex-direction: column; gap: 14px; position: relative;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div>
-              <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">${g.title}</h3>
-              <div style="display: flex; gap: 8px; align-items: center;">
-                <span class="tag" style="font-size: 10px; background: var(--bg-tertiary);">${g.type}</span>
-                ${g.deadline ? `<span style="font-size: 11px; color: var(--text-tertiary);">Due ${new Date(g.deadline).toLocaleDateString()}</span>` : ''}
+              <h3 style="margin: 0 0 4px 0; font-size: var(--text-base); font-weight: 700; color: var(--text-primary);">${g.title}</h3>
+              <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <span class="tag" style="font-size: 10px; background: var(--bg-tertiary); text-transform: uppercase; font-weight: 600; padding: 2px 8px; color: var(--text-secondary);">${g.type}</span>
+                ${g.deadline ? `<span style="font-size: 11px; color: var(--accent-primary); font-weight: 500;">Due ${g.deadline}</span>` : ''}
               </div>
             </div>
-            <button class="btn btn--icon btn--ghost btn--sm btn-delete-goal" data-id="${g.id}" style="color: var(--text-tertiary);">
-              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            <button class="btn btn--icon btn--ghost btn--sm btn-delete-goal" data-id="${g.id}" style="color: var(--text-tertiary);" title="Delete Goal">
+              <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
             </button>
           </div>
           
-          ${g.notes ? `<p style="font-size: 13px; color: var(--text-secondary); margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${g.notes}</p>` : ''}
+          ${g.notes ? `<p style="font-size: var(--text-xs); color: var(--text-secondary); margin: 0; line-height: 1.5;">${g.notes}</p>` : ''}
           
-          <div style="margin-top: auto;">
-            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; color: var(--text-tertiary);">
-              <span>Progress</span>
-              <span>${g.progress || 0}%</span>
+          <div style="margin-top: auto; border-top: 1px solid var(--border-light); padding-top: 12px;">
+            <div style="display: flex; justify-content: space-between; font-size: var(--text-xs); margin-bottom: 6px; color: var(--text-secondary); font-weight: 600;">
+              <span>Automatic Task Cascade</span>
+              <span style="color: var(--accent-primary); font-weight: 700;">${g.progress || 0}%</span>
             </div>
             <div class="progress-bar" style="height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden;">
-              <div style="height: 100%; background: var(--accent-primary); width: ${g.progress || 0}%; transition: width 0.3s ease;"></div>
+              <div style="height: 100%; background: var(--accent-primary); width: ${g.progress || 0}%; transition: width 0.4s ease;"></div>
             </div>
           </div>
         </div>
@@ -100,11 +109,14 @@ function bindEvents() {
 
   root.querySelectorAll('[data-tab]').forEach(btn => {
     btn.onclick = (e) => {
-      currentTab = e.target.dataset.tab;
-      document.querySelector('.view--goals').outerHTML = render();
+      currentTab = e.currentTarget.dataset.tab;
       renderContent();
       bindEvents();
     };
+  });
+
+  document.getElementById('btn-goals-plan-roadmap')?.addEventListener('click', () => {
+    window.app.navigate('roadmap');
   });
 
   const btnNew = root.querySelector('#btn-new-goal');
@@ -116,83 +128,81 @@ function bindEvents() {
   root.querySelectorAll('.btn-delete-goal').forEach(btn => {
     btn.onclick = (e) => {
       const id = e.currentTarget.dataset.id;
-      if (confirm('Delete this goal?')) {
-        if (window.store.deleteGoal) {
-           window.store.deleteGoal(id);
-        } else {
-           // Fallback if helper missing
-           const updated = currentGoals.filter(g => g.id !== id);
-           window.store.set('goals', updated);
-        }
-        window.app.showToast('Goal deleted', 'success');
-      }
+      window.app.showModal(`
+        <div style="padding: 10px;">
+          <h2 style="font-size: var(--text-base); font-weight: 700;">Delete Goal?</h2>
+          <p style="font-size: var(--text-xs); color: var(--text-secondary); margin-top: 4px;">Are you sure you want to remove this goal?</p>
+          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+            <button class="btn btn--ghost" onclick="window.app.hideModal()">Cancel</button>
+            <button class="btn btn--danger" id="confirm-del-goal">Delete</button>
+          </div>
+        </div>
+      `);
+      document.getElementById('confirm-del-goal')?.addEventListener('click', () => {
+        window.store.deleteGoal(id);
+        window.app.showToast('Goal deleted', 'info');
+        window.app.hideModal();
+      });
     };
   });
 }
 
 function showNewGoalModal() {
-  const modalHtml = `
-    <div style="padding: 24px;">
-      <h2 style="margin: 0 0 16px 0;">New Goal</h2>
-      <div style="display: flex; flex-direction: column; gap: 16px;">
+  window.app.showModal(`
+    <div style="padding: 10px;">
+      <h2 style="font-size: var(--text-lg); font-weight: 700; margin-bottom: 12px;">Create Goal</h2>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
         <div>
-          <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500;">Title</label>
-          <input type="text" id="new-goal-title" class="input" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-sm);" placeholder="E.g., Learn Spanish">
+          <label style="font-size: var(--text-xs); color: var(--text-secondary);">Goal Title</label>
+          <input type="text" id="new-goal-title" class="input" style="width: 100%; margin-top: 4px;" placeholder="e.g. Master Modern Web Development" autofocus>
         </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div>
+            <label style="font-size: var(--text-xs); color: var(--text-secondary);">Hierarchy Level</label>
+            <select id="new-goal-type" class="input" style="width: 100%; margin-top: 4px;">
+              <option value="long-term">Long-term</option>
+              <option value="yearly">Yearly</option>
+              <option value="quarterly" selected>Quarterly</option>
+              <option value="monthly">Monthly</option>
+              <option value="weekly">Weekly</option>
+              <option value="daily">Daily</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size: var(--text-xs); color: var(--text-secondary);">Deadline</label>
+            <input type="date" id="new-goal-deadline" class="input" style="width: 100%; margin-top: 4px;">
+          </div>
+        </div>
+
         <div>
-          <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500;">Type</label>
-          <select id="new-goal-type" class="input" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-sm);">
-            <option value="long-term">Long-term</option>
-            <option value="yearly">Yearly</option>
-            <option value="quarterly">Quarterly</option>
-            <option value="monthly">Monthly</option>
-            <option value="weekly">Weekly</option>
-            <option value="daily">Daily</option>
-          </select>
-        </div>
-        <div>
-          <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500;">Progress (%)</label>
-          <input type="number" id="new-goal-progress" class="input" min="0" max="100" value="0" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-sm);">
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
-          <button class="btn btn--ghost" onclick="window.app.hideModal()">Cancel</button>
-          <button class="btn btn--primary" id="btn-save-goal">Save Goal</button>
+          <label style="font-size: var(--text-xs); color: var(--text-secondary);">Notes</label>
+          <textarea id="new-goal-notes" class="input" rows="2" placeholder="Goal details..." style="width: 100%; margin-top: 4px;"></textarea>
         </div>
       </div>
-    </div>
-  `;
-  window.app.showModal(modalHtml);
 
-  setTimeout(() => {
-    const btnSave = document.getElementById('btn-save-goal');
-    if (btnSave) {
-      btnSave.onclick = () => {
-        const title = document.getElementById('new-goal-title').value;
-        const type = document.getElementById('new-goal-type').value;
-        const progress = parseInt(document.getElementById('new-goal-progress').value, 10) || 0;
-        
-        if (title.trim()) {
-          const goal = {
-            id: window.store.generateId(),
-            title,
-            type,
-            progress,
-            createdAt: new Date().toISOString()
-          };
-          
-          if (window.store.addGoal) {
-            window.store.addGoal(goal);
-          } else {
-            const current = window.store.get('goals') || [];
-            window.store.set('goals', [...current, goal]);
-          }
-          
-          window.app.hideModal();
-          window.app.showToast('Goal created', 'success');
-        }
-      };
-    }
-  }, 0);
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+        <button class="btn btn--ghost" onclick="window.app.hideModal()">Cancel</button>
+        <button class="btn btn--primary" id="btn-save-goal">Create Goal</button>
+      </div>
+    </div>
+  `);
+
+  document.getElementById('btn-save-goal')?.addEventListener('click', () => {
+    const title = document.getElementById('new-goal-title')?.value;
+    if (!title || !title.trim()) return;
+
+    window.store.addGoal({
+      title: title.trim(),
+      type: document.getElementById('new-goal-type')?.value || 'monthly',
+      deadline: document.getElementById('new-goal-deadline')?.value || null,
+      notes: document.getElementById('new-goal-notes')?.value || ''
+    });
+
+    window.app.showToast('Goal created', 'success');
+    window.app.hideModal();
+  });
 }
 
 export function unmount() {

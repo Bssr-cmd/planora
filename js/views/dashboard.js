@@ -90,7 +90,10 @@ export function render() {
       <header class="view__header animate-fade-up animate-stagger-1" style="align-items: flex-start; margin-bottom: 20px;">
         <div>
           <h1 class="view__title" style="font-size: clamp(1.6rem, 2.5vw, 2.25rem); font-weight: 700; letter-spacing: -0.02em;">${greeting}, ${userName}</h1>
-          <p class="view__subtitle" style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <p style="font-size: var(--text-sm); font-weight: 500; color: var(--accent-primary); margin-top: 2px; font-style: italic;">
+            "Let's make today count."
+          </p>
+          <p class="view__subtitle" style="font-size: var(--text-xs); color: var(--text-secondary); margin-top: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <span>${fullDateStr}</span>
             <span style="color: var(--text-tertiary);">•</span>
             <span class="badge" style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 11px; font-weight: 500;">Week ${weekNum} · Day ${dayOfWeek}</span>
@@ -319,37 +322,67 @@ export function render() {
           </div>
         ` : ''}
 
-        <!-- WIDGET 5: ACTIVE PROJECTS -->
+        <!-- WIDGET 5: ACTIVE PROJECTS & COMING UP -->
         ${widgetConfig.projects !== false ? `
-          <div class="animate-fade-up animate-stagger-4" style="background: var(--bg-secondary); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border-light);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <h3 style="font-size: var(--text-base); font-weight: 700; color: var(--text-primary); margin: 0;">
-                📁 ACTIVE PROJECTS
-              </h3>
-              <button class="btn btn--ghost btn--sm" id="btn-view-projects" style="font-size: var(--text-xs); color: var(--accent-primary);">View all →</button>
+          <div class="animate-fade-up animate-stagger-4" style="display: flex; flex-direction: column; gap: 24px;">
+            <div style="background: var(--bg-secondary); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border-light);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="font-size: var(--text-base); font-weight: 700; color: var(--text-primary); margin: 0;">
+                  📁 ACTIVE PROJECTS
+                </h3>
+                <button class="btn btn--ghost btn--sm" id="btn-view-projects" style="font-size: var(--text-xs); color: var(--accent-primary);">View all →</button>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 14px;">
+                ${activeProjects.length === 0 ? `
+                  <div class="empty-state" style="padding: 20px 0; text-align: center;">
+                    <p class="empty-state__message" style="font-size: var(--text-xs); color: var(--text-secondary);">No active projects yet.</p>
+                    <p style="font-size: var(--text-xs); color: var(--text-tertiary); margin-top: 4px;">Turn a goal into your first project.</p>
+                    <button class="btn btn--primary btn--sm" id="btn-create-project-empty" style="margin-top: 10px;">+ Create Project</button>
+                  </div>
+                ` : activeProjects.map(proj => {
+                  const progress = store.getProjectProgress(proj.id);
+                  return `
+                    <div class="project-progress-item" data-id="${proj.id}" style="cursor: pointer; padding: 10px; background: var(--bg-elevated); border-radius: var(--radius-md); transition: transform 150ms;">
+                      <div style="display: flex; justify-content: space-between; font-size: var(--text-sm); font-weight: 600; margin-bottom: 6px;">
+                        <span>${proj.name}</span>
+                        <span style="color: var(--accent-primary); font-weight: 700;">${progress}%</span>
+                      </div>
+                      <div class="progress-bar" style="height: 6px; background: var(--border);">
+                        <div class="progress-bar__fill" style="width: ${progress}%; background: ${proj.color || 'var(--accent-primary)'};"></div>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 14px;">
-              ${activeProjects.length === 0 ? `
-                <div class="empty-state" style="padding: 20px 0; text-align: center;">
-                  <p class="empty-state__message" style="font-size: var(--text-xs); color: var(--text-secondary);">No active projects yet.</p>
-                  <p style="font-size: var(--text-xs); color: var(--text-tertiary); margin-top: 4px;">Turn a goal into your first project.</p>
-                  <button class="btn btn--primary btn--sm" id="btn-create-project-empty" style="margin-top: 10px;">+ Create Project</button>
-                </div>
-              ` : activeProjects.map(proj => {
-                const progress = store.getProjectProgress(proj.id);
-                return `
-                  <div class="project-progress-item" data-id="${proj.id}" style="cursor: pointer; padding: 10px; background: var(--bg-elevated); border-radius: var(--radius-md); transition: transform 150ms;">
-                    <div style="display: flex; justify-content: space-between; font-size: var(--text-sm); font-weight: 600; margin-bottom: 6px;">
-                      <span>${proj.name}</span>
-                      <span style="color: var(--accent-primary); font-weight: 700;">${progress}%</span>
+            <!-- COMING UP / UPCOMING DEADLINES CARD -->
+            <div style="background: var(--bg-elevated); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border-light); box-shadow: var(--shadow-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <h3 style="font-size: var(--text-base); font-weight: 700; color: var(--text-primary); margin: 0; display: flex; align-items: center; gap: 6px;">
+                  <span>📌 COMING UP</span>
+                </h3>
+                <button class="btn btn--ghost btn--sm" onclick="window.app.navigate('tasks')" style="font-size: var(--text-xs); color: var(--accent-primary);">Tasks →</button>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                ${(() => {
+                  const upcoming = store.get('tasks').filter(t => !t.completed && t.deadline).sort((a,b) => a.deadline.localeCompare(b.deadline)).slice(0, 3);
+                  if (upcoming.length === 0) {
+                    return '<p style="font-size: var(--text-xs); color: var(--text-tertiary); text-align: center; margin: 8px 0;">No upcoming deadlines scheduled.</p>';
+                  }
+                  return upcoming.map(t => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: var(--bg-secondary); border-radius: var(--radius-sm);">
+                      <div>
+                        <div style="font-size: var(--text-xs); font-weight: 600; color: var(--text-primary);">${t.title}</div>
+                        <div style="font-size: 10px; color: var(--accent-danger); font-weight: 500;">Due ${t.deadline}</div>
+                      </div>
+                      <span class="badge" style="font-size: 10px; text-transform: uppercase; background: var(--bg-tertiary); color: var(--text-secondary);">${t.priority || 'medium'}</span>
                     </div>
-                    <div class="progress-bar" style="height: 6px; background: var(--border);">
-                      <div class="progress-bar__fill" style="width: ${progress}%; background: ${proj.color || 'var(--accent-primary)'};"></div>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
+                  `).join('');
+                })()}
+              </div>
             </div>
           </div>
         ` : ''}

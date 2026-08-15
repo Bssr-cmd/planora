@@ -41,16 +41,17 @@ export function startAmbientSound(type) {
   ambientGain.gain.setValueAtTime(0.05, ctx.currentTime);
   ambientGain.connect(ctx.destination);
 
-  if (type === 'noise' || type === 'waves') {
+  if (type === 'noise' || type === 'waves' || type === 'forest') {
     const bufferSize = ctx.sampleRate * 5;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
     let lastOut = 0.0;
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1;
-      data[i] = (lastOut + (0.02 * white)) / 1.02;
+      const factor = type === 'forest' ? 0.01 : 0.02;
+      data[i] = (lastOut + (factor * white)) / 1.02;
       lastOut = data[i];
-      data[i] *= 3.5;
+      data[i] *= (type === 'forest' ? 2.2 : 3.5);
     }
 
     ambientSource = ctx.createBufferSource();
@@ -218,8 +219,9 @@ function renderTimer() {
         <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
           ${[
             { id: 'off', label: 'Off' },
-            { id: 'noise', label: '🌧 Brown Noise' },
+            { id: 'noise', label: '🌧 Brown Rain' },
             { id: 'waves', label: '🌊 Soft Waves' },
+            { id: 'forest', label: '🌲 Calm Forest' },
             { id: 'chime', label: '🔔 Solfeggio Chime' }
           ].map(s => `
             <button class="btn btn--sm ${currentSound === s.id ? 'btn--primary' : 'btn--ghost'}" data-sound="${s.id}" style="font-size: 12px; padding: 4px 12px;">
