@@ -75,7 +75,7 @@ function renderProjectsGrid() {
     const completed = pTasks.filter(t => t.completed).length;
     const total = pTasks.length;
     const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
-    const pNotes = window.store.getProjectNotes ? window.store.getProjectNotes(p.id) : [];
+    const pNotes = window.notesService.getAllNotes().filter(n => n.projectId === p.id);
     
     return `
       <div class="card card--interactive project-card" data-id="${p.id}" style="border-top: 4px solid ${p.color || 'var(--accent-primary)'}; padding: 20px; cursor: pointer; border-radius: var(--radius-lg);">
@@ -118,7 +118,7 @@ function renderProjectDetail() {
   if (!p) return '';
 
   const pTasks = currentTasks.filter(t => t.projectId === p.id);
-  const pNotes = window.store.getProjectNotes ? window.store.getProjectNotes(p.id) : [];
+  const pNotes = window.notesService.getAllNotes().filter(n => n.projectId === p.id);
 
   return `
     <div class="project-detail" style="max-width: 960px; margin: 0 auto;">
@@ -260,7 +260,7 @@ function renderProjectNotes() {
   const p = currentProjects.find(p => p.id === selectedProjectId);
   if (!p) return '';
 
-  const notes = store.getProjectNotes(selectedProjectId);
+  const notes = window.notesService.getAllNotes().filter(n => n.projectId === selectedProjectId);
   if (!selectedNoteId && notes.length > 0) {
     selectedNoteId = notes[0].id;
   }
@@ -447,9 +447,8 @@ function bindEvents() {
   // Create Note
   const createNoteBtn = document.getElementById('btn-create-note') || document.getElementById('btn-create-first-note');
   if (createNoteBtn) {
-    createNoteBtn.onclick = () => {
-      const store = window.store;
-      const newNote = store.addProjectNote({
+    createNoteBtn.onclick = async () => {
+      const newNote = await window.notesService.createNote({
         projectId: selectedProjectId,
         title: 'New Document Note',
         content: '# New Note Title\n\nStart typing specification details...'
@@ -461,9 +460,9 @@ function bindEvents() {
   }
 
   // Delete Note
-  document.getElementById('btn-delete-note')?.addEventListener('click', () => {
+  document.getElementById('btn-delete-note')?.addEventListener('click', async () => {
     if (selectedNoteId) {
-      window.store.deleteProjectNote(selectedNoteId);
+      await window.notesService.deleteNote(selectedNoteId);
       selectedNoteId = null;
       window.app.showToast('Note deleted', 'info');
       renderContent();
@@ -476,7 +475,7 @@ function bindEvents() {
   if (titleInput) {
     titleInput.oninput = (e) => {
       if (selectedNoteId) {
-        window.store.updateProjectNote(selectedNoteId, { title: e.target.value });
+        window.notesService.saveNote(selectedNoteId, { title: e.target.value });
       }
     };
   }
@@ -485,7 +484,7 @@ function bindEvents() {
   if (contentTextarea) {
     contentTextarea.oninput = (e) => {
       if (selectedNoteId) {
-        window.store.updateProjectNote(selectedNoteId, { content: e.target.value });
+        window.notesService.saveNote(selectedNoteId, { content: e.target.value });
       }
     };
   }
@@ -512,7 +511,7 @@ function bindEvents() {
       if (fmt === 'callout') prefix = '\n> Note: Highlight text\n';
 
       ta.value += prefix;
-      window.store.updateProjectNote(selectedNoteId, { content: ta.value });
+      window.notesService.saveNote(selectedNoteId, { content: ta.value });
       renderContent();
       bindEvents();
     };

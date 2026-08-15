@@ -1,7 +1,9 @@
 import { Store } from './store.js';
 import { springAnimate } from './spring.js';
+import { NotesService } from './features/notes/notes-service.js';
 
 window.store = new Store();
+window.notesService = new NotesService(window.store);
 
 const viewModules = {};
 async function loadView(name) {
@@ -206,6 +208,9 @@ window.app = app;
 
 /* ── Initialization ──────────────────────────── */
 document.addEventListener('DOMContentLoaded', async () => {
+  // Initialize NotesService
+  await window.notesService.init();
+
   // Apply saved theme
   const initialTheme = app.getActiveTheme();
   document.body.setAttribute('data-theme', initialTheme);

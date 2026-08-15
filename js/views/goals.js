@@ -75,6 +75,15 @@ function renderContent() {
           
           ${g.notes ? `<p style="font-size: var(--text-xs); color: var(--text-secondary); margin: 0; line-height: 1.5;">${g.notes}</p>` : ''}
           
+          <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 6px;">
+             ${window.notesService.getAllNotes().filter(n => n.goalId === g.id).map(n => `
+               <div style="font-size: 11px; padding: 4px 8px; background: var(--bg-secondary); border-radius: 4px; color: var(--text-primary); border: 1px solid var(--border-light); cursor: pointer;" onclick="window.app.navigate('notes');">
+                 📄 ${n.title}
+               </div>
+             `).join('')}
+             <div style="font-size: 11px; padding: 4px 8px; color: var(--accent-primary); cursor: pointer; font-weight: 600;" class="btn-create-goal-note" data-id="${g.id}" data-title="${g.title}">+ Add Related Knowledge</div>
+          </div>
+
           <div style="margin-top: auto; border-top: 1px solid var(--border-light); padding-top: 12px;">
             <div style="display: flex; justify-content: space-between; font-size: var(--text-xs); margin-bottom: 6px; color: var(--text-secondary); font-weight: 600;">
               <span>Automatic Task Cascade</span>
@@ -143,6 +152,21 @@ function bindEvents() {
         window.app.showToast('Goal deleted', 'info');
         window.app.hideModal();
       });
+    };
+  });
+
+  root.querySelectorAll('.btn-create-goal-note').forEach(btn => {
+    btn.onclick = async (e) => {
+      const goalId = e.currentTarget.dataset.id;
+      const title = e.currentTarget.dataset.title;
+      await window.notesService.createNote({
+         title: title,
+         content: `# ${title}\n\n## Goal Knowledge\n\n`,
+         goalId: goalId
+      });
+      window.app.showToast('Note created for Goal', 'success');
+      renderContent();
+      bindEvents();
     };
   });
 }

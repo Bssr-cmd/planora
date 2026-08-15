@@ -263,6 +263,35 @@ export class Store {
           updatedAt: new Date().toISOString()
         }
       ],
+      vaultNotes: [
+        {
+          id: 'v-1',
+          title: 'Welcome to Obsidian Vault',
+          folder: 'General',
+          content: `# Welcome to Obsidian Vault in Planora 🧠\n\nThis is your interconnected knowledge base powered by bi-directional [[WikiLinks]] and an interactive **Knowledge Graph**.\n\n## Key Features\n- **Bi-directional Links**: Use \`[[Note Title]]\` syntax to link notes together.\n- **Knowledge Graph**: Click the **Graph View** button to visualize your neural network of ideas.\n- **Live Markdown**: Full support for headers, lists, checklists, callouts, and code blocks.\n- **Backlinks Panel**: See every document referencing the active note in real-time.\n\nRelated notes:\n- See [[Project System Architecture]] for technical design.\n- See [[Daily Mental Retrospective]] for daily journal entries.`,
+          pinned: true,
+          tags: ['obsidian', 'knowledge', 'guide'],
+          updatedAt: new Date().toISOString()
+        },
+        {
+          id: 'v-2',
+          title: 'Project System Architecture',
+          folder: 'Engineering',
+          content: `# Project System Architecture ⚡\n\nConnected to [[Welcome to Obsidian Vault]] and [[Daily Mental Retrospective]].\n\n## Tech Stack\n- **State Engine**: Pub/Sub Reactive Store\n- **Physics Engine**: Spring Animation Mechanics\n- **Knowledge Engine**: Inter-connected Wiki Graph\n\n> [!NOTE]\n> Every [[WikiLink]] automatically generates canvas graph edges!`,
+          pinned: false,
+          tags: ['engineering', 'architecture'],
+          updatedAt: new Date().toISOString()
+        },
+        {
+          id: 'v-3',
+          title: 'Daily Mental Retrospective',
+          folder: 'Personal',
+          content: `# Daily Mental Retrospective 🧘\n\nReviewing daily focus momentum and system productivity.\n\nLinked references:\n- Check [[Welcome to Obsidian Vault]] for guidelines.\n- Check [[Project System Architecture]] for pending tasks.\n\n## Checklist\n- [x] Morning focus block\n- [x] Project review\n- [ ] Evening rollover`,
+          pinned: false,
+          tags: ['journal', 'personal'],
+          updatedAt: new Date().toISOString()
+        }
+      ],
       settings: {
         userName: 'Alex',
         theme: 'calm-light',
@@ -819,6 +848,9 @@ export class Store {
     const notes = this.get('projectNotes') || [];
     return notes.filter(n => n.projectId === projectId);
   }
+
+  // Vault Notes (Obsidian) helpers are now handled by NotesService (js/features/notes/notes-service.js)
+  // which synchronizes with the 'vaultNotes' store state for reactive UI updates.
 
   // Settings
   getSetting(key) {

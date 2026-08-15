@@ -287,9 +287,21 @@ function openTaskModal(task = null) {
         </div>
 
         <div>
-          <label style="font-size: var(--text-xs); color: var(--text-secondary);">Notes</label>
+          <label style="font-size: var(--text-xs); color: var(--text-secondary);">Description / Quick Notes</label>
           <textarea id="modal-task-notes" class="input w-full" rows="3" placeholder="Add task notes..." style="margin-top: 4px;">${t.notes || ''}</textarea>
         </div>
+        
+        ${isEdit ? `
+        <div style="margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+             <label style="font-size: var(--text-xs); color: var(--text-secondary); font-weight: 600;">Related Knowledge</label>
+             <button id="modal-btn-create-note" class="text-accent-primary text-[11px] font-semibold flex items-center hover:underline cursor-pointer" type="button">+ Create Note</button>
+          </div>
+          <div id="modal-related-notes" style="display: flex; flex-direction: column; gap: 4px;">
+             <!-- Rendered dynamically -->
+          </div>
+        </div>
+        ` : ''}
       </div>
 
       <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
@@ -300,6 +312,34 @@ function openTaskModal(task = null) {
   `;
   
   window.app.showModal(html);
+  
+  if (isEdit) {
+    const relatedNotes = window.notesService.getAllNotes().filter(n => n.taskIds && n.taskIds.includes(task.id));
+    const rnContainer = document.getElementById('modal-related-notes');
+    if (rnContainer) {
+      if (relatedNotes.length === 0) {
+         rnContainer.innerHTML = '<div style="font-size: 11px; color: var(--text-tertiary);">No related knowledge.</div>';
+      } else {
+         rnContainer.innerHTML = relatedNotes.map(n => `
+           <div class="p-2 rounded bg-bg-secondary border border-border text-xs flex justify-between items-center cursor-pointer hover:border-accent-primary">
+              <span style="font-weight: 600; color: var(--text-primary);">📄 ${n.title}</span>
+           </div>
+         `).join('');
+      }
+    }
+
+    document.getElementById('modal-btn-create-note')?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await window.notesService.createNote({
+           title: task.title,
+           content: `# ${task.title}\n\n## Task Context\n\n`,
+           taskIds: [task.id],
+           projectId: task.projectId || null
+        });
+        window.app.showToast('Note created & linked', 'success');
+        window.app.hideModal();
+    });
+  }
   
   document.getElementById('modal-btn-save')?.addEventListener('click', () => {
     const title = document.getElementById('modal-task-title').value.trim();

@@ -462,7 +462,10 @@ function renderGoogleDayView() {
     <div style="padding: 24px; overflow-y: auto; max-width: 800px; margin: 0 auto; width: 100%;">
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px;">
         <h2 style="font-size: var(--text-xl); font-weight: 700; color: var(--text-primary); margin: 0;">${currentDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</h2>
-        <button class="btn btn--primary btn--sm" onclick="openGoogleEventModal('${dateStr}')">+ Add Event</button>
+        <div style="display: flex; gap: 8px;">
+           <button class="btn btn--secondary btn--sm" id="btn-open-daily-note" data-date="${dateStr}">📝 Daily Note</button>
+           <button class="btn btn--primary btn--sm" onclick="openGoogleEventModal('${dateStr}')">+ Add Event</button>
+        </div>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -558,6 +561,20 @@ function bindGCalInteractions() {
         openGoogleEventModal(existingEvent.date, existingEvent);
       }
     });
+  });
+
+  document.getElementById('btn-open-daily-note')?.addEventListener('click', async (e) => {
+     const dateStr = e.currentTarget.dataset.date;
+     const dailyTitle = `Daily Note: ${dateStr}`;
+     let note = window.notesService.getAllNotes().find(n => n.title === dailyTitle);
+     if (!note) {
+        note = await window.notesService.createNote({
+           title: dailyTitle,
+           content: `# ${dailyTitle}\n\n## Tasks for today\n\n- [ ] \n\n## Journal\n\n`
+        });
+     }
+     window.store.set('__pendingNoteSelection', note.id);
+     window.app.navigate('notes');
   });
 }
 

@@ -517,7 +517,10 @@ export function openTotalScreenFocus(taskId = null) {
       <!-- Ambient Backglow -->
       <div style="position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(108, 99, 255, 0.25) 0%, transparent 70%); pointer-events: none; z-index: 1;"></div>
 
-      <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; max-width: 600px; text-align: center;">
+      <div style="position: relative; z-index: 2; display: flex; flex-direction: row; gap: 48px; align-items: flex-start; max-width: 1000px; width: 100%;">
+        
+        <!-- MAIN FOCUS AREA -->
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center;">
         
         <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #8176FF; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px;">
           ✦ TOTAL SCREEN FOCUS MODE
@@ -562,6 +565,40 @@ export function openTotalScreenFocus(taskId = null) {
         <button class="btn" id="ts-btn-exit" style="background: transparent; color: #A0A0B0; border: none; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
           ⛶ Exit Total Screen Focus (ESC)
         </button>
+        </div>
+
+        <!-- RELATED KNOWLEDGE SIDEBAR -->
+        ${(selectedTaskId && window.notesService) ? (() => {
+            const relatedNotes = window.notesService.getAllNotes().filter(n => n.taskIds && n.taskIds.includes(selectedTaskId));
+            if (relatedNotes.length === 0) return '';
+            return `
+              <div style="width: 300px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px; backdrop-filter: blur(20px);">
+                <div style="font-size: 12px; font-weight: 700; color: #8176FF; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;">
+                  Related Knowledge
+                </div>
+                ${relatedNotes.map(n => `
+                  <div class="ts-related-note" data-id="${n.id}" style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">
+                    <div style="font-size: 14px; font-weight: 600; color: #FFF; margin-bottom: 4px;">${n.title}</div>
+                    <div style="font-size: 11px; color: #A0A0B0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                       Click to preview
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            `;
+        })() : ''}
+      </div>
+
+      <!-- NOTE PREVIEW MODAL (Hidden by default) -->
+      <div id="ts-note-preview-modal" style="display: none; position: fixed; inset: 0; z-index: 9999999; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 40px; align-items: center; justify-content: center;">
+         <div style="background: #1A1A24; border: 1px solid #333; border-radius: 16px; width: 100%; max-width: 700px; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #222230;">
+               <h3 id="ts-note-title" style="margin: 0; font-size: 18px; font-weight: 700; color: #FFF;">Note Title</h3>
+               <button id="ts-note-close" style="background: transparent; border: none; color: #A0A0B0; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <div id="ts-note-content" style="padding: 24px; overflow-y: auto; color: #E0E0E0; font-size: 14px; line-height: 1.6; font-family: monospace; white-space: pre-wrap;">
+            </div>
+         </div>
       </div>
     `;
 
@@ -588,6 +625,22 @@ export function openTotalScreenFocus(taskId = null) {
         startAmbientSound(snd);
         renderOverlayHTML();
       });
+    });
+
+    overlay.querySelectorAll('.ts-related-note').forEach(item => {
+      item.addEventListener('click', (e) => {
+        const noteId = e.currentTarget.dataset.id;
+        const note = window.notesService.getNote(noteId);
+        if (note) {
+          document.getElementById('ts-note-title').textContent = note.title;
+          document.getElementById('ts-note-content').textContent = note.content;
+          document.getElementById('ts-note-preview-modal').style.display = 'flex';
+        }
+      });
+    });
+
+    document.getElementById('ts-note-close')?.addEventListener('click', () => {
+       document.getElementById('ts-note-preview-modal').style.display = 'none';
     });
   };
 
