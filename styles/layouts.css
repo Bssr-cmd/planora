@@ -1,0 +1,240 @@
+/* App Shell */
+.app {
+  display: flex;
+  min-height: 100dvh;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 240px;
+  height: 100dvh;
+  background-color: var(--surface-glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+  z-index: 100;
+  transition: transform 300ms var(--spring-easing), width 300ms var(--spring-easing);
+}
+
+.sidebar__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+}
+
+.sidebar__logo span {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.sidebar__nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.sidebar__section-header {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  padding: 8px 12px 4px 12px;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  text-align: left;
+  transition: all 150ms;
+  font-family: inherit;
+}
+
+.sidebar__item svg {
+  flex-shrink: 0;
+}
+
+.sidebar__item:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.sidebar__item--active {
+  background-color: rgba(108, 99, 255, 0.1);
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+.sidebar__divider {
+  height: 1px;
+  background-color: var(--border-light);
+  margin: 8px 12px;
+}
+
+.sidebar__footer {
+  border-top: 1px solid var(--border-light);
+  padding-top: 8px;
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 240px;
+  flex: 1;
+  min-height: 100dvh;
+  overflow-y: auto;
+  transition: margin-left 300ms var(--spring-easing);
+}
+
+/* Mobile Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--surface-glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid var(--border);
+  display: none;
+  padding: 4px 0 env(safe-area-inset-bottom);
+  z-index: 100;
+}
+
+.bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.bottom-nav__item--active {
+  color: var(--accent-primary);
+}
+
+.bottom-nav__icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 64px;
+  }
+  
+  .sidebar__logo span,
+  .sidebar__item span,
+  .sidebar__item text,
+  .sidebar__item::after {
+    display: none;
+  }
+  
+  /* Select text nodes inside sidebar item and hide them */
+  .sidebar__item {
+    font-size: 0;
+    justify-content: center;
+    padding: 12px;
+  }
+  
+  .sidebar__logo {
+    justify-content: center;
+    padding: 8px 0;
+  }
+  
+  .main-content {
+    margin-left: 64px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    width: 240px; /* Reset width for mobile menu */
+  }
+  
+  .sidebar--open {
+    transform: translateX(0);
+  }
+  
+  .sidebar__logo span,
+  .sidebar__item {
+    font-size: var(--text-sm);
+    justify-content: flex-start;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+  
+  .bottom-nav {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .view {
+    padding: 16px;
+  }
+  
+  .weekly-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  
+  .kanban {
+    scroll-snap-type: x mandatory;
+  }
+  
+  .kanban__column {
+    scroll-snap-align: start;
+  }
+  
+  .calendar-grid {
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+    border: none;
+  }
+  
+  .calendar-cell {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: 8px;
+    min-height: auto;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .weekly-grid {
+    grid-template-columns: 1fr;
+  }
+}
